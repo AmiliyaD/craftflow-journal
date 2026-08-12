@@ -9,6 +9,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const nav: { to: string; label: string; icon: LucideIcon }[] = [
   { to: "/", label: "Dashboard", icon: LayoutGrid },
@@ -60,6 +61,9 @@ export function Shell({ children }: { children: ReactNode }) {
         </nav>
 
         <div className="mt-auto flex flex-col gap-1 border-t border-border pt-4">
+          <div className="mb-2 px-1">
+            <ThemeToggle />
+          </div>
           <NavItem to="/settings" label="Settings" icon={Settings} />
           <Link
             to="/profile"
@@ -78,9 +82,12 @@ export function Shell({ children }: { children: ReactNode }) {
 
       <div className="min-w-0 flex-1">
         <div className="border-b border-border px-5 py-4 md:hidden">
-          <span className="display-title text-xl">
-            ART<span className="text-accent">//</span>PROGRESS
-          </span>
+          <div className="flex items-center justify-between gap-3">
+            <span className="display-title text-xl">
+              ART<span className="text-accent">//</span>PROGRESS
+            </span>
+            <ThemeToggle />
+          </div>
           <nav className="mt-3 flex gap-1 overflow-x-auto pb-1">
             {[...nav, { to: "/settings", label: "Settings", icon: Settings }].map((n) => (
               <Link

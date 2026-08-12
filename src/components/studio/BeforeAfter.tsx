@@ -42,7 +42,10 @@ export function BeforeAfter() {
           height={900}
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }}>
+        <div
+          className="absolute inset-0"
+          style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
+        >
           <img
             src={before}
             alt="Early portrait sketch"
@@ -50,7 +53,6 @@ export function BeforeAfter() {
             width={1200}
             height={900}
             className="h-full w-full object-cover"
-            style={{ width: ref.current?.offsetWidth ?? "100%", maxWidth: "none" }}
           />
           <span className="absolute left-4 top-4 rounded-full border border-border-strong bg-background/70 px-3 py-1 text-[0.68rem] tracking-widest uppercase backdrop-blur-md">
             2024

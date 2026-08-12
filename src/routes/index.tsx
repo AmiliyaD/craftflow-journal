@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Clock3,
@@ -14,7 +15,9 @@ import { JourneyGraph } from "@/components/studio/JourneyGraph";
 import { SkillCard } from "@/components/studio/SkillCard";
 import { ArtworkCard } from "@/components/studio/ArtworkCard";
 import { BeforeAfter } from "@/components/studio/BeforeAfter";
+import { NewSessionModal } from "@/components/studio/NewSessionModal";
 import { artworks, skills } from "@/components/studio/data";
+import { formatHours, useSessions, MOODS } from "@/lib/sessions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,7 +40,18 @@ export const Route = createFileRoute("/")({
 
 const achievements = ["100 Hours", "First Portrait", "30 Day Streak", "100 Hand Studies"];
 
+const BASE = { totalMs: (127 * 60 + 34) * 60000, sessions: 146, streak: 12 };
+
 function Dashboard() {
+  const [open, setOpen] = useState(false);
+  const { sessions, addSession, stats } = useSessions();
+
+  const total = formatHours(BASE.totalMs + stats.totalMs);
+  const sessionCount = BASE.sessions + stats.count;
+  const streak = Math.max(BASE.streak, stats.streak);
+  const latest = sessions[0];
+  const latestMood = latest ? MOODS.find((m) => m.key === latest.mood) : undefined;
+
   return (
     <Shell>
       <header className="flex flex-wrap items-end justify-between gap-6">
@@ -48,7 +62,10 @@ function Dashboard() {
             Let&apos;s see how your art is evolving.
           </p>
         </div>
-        <button className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm text-accent-foreground transition-opacity duration-300 hover:opacity-90">
+        <button
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm text-accent-foreground transition-opacity duration-300 hover:opacity-90"
+        >
           <Plus size={15} strokeWidth={2} />
           New session
         </button>
@@ -57,14 +74,27 @@ function Dashboard() {
       <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Drawing time"
-          value="127h"
-          unit="34m"
-          change="+8h 12m"
+          value={`${total.hours}h`}
+          unit={`${total.minutes}m`}
+          change={
+            stats.totalMs > 0 ? `+${formatHours(stats.totalMs).label} tracked` : "+8h 12m"
+          }
           icon={Clock3}
         />
         <StatCard label="Artworks" value="83" change="+6" icon={ImageIcon} />
-        <StatCard label="Current streak" value="12" unit="days" change="+4" icon={Flame} />
-        <StatCard label="Sessions" value="146" change="+11" icon={Activity} />
+        <StatCard
+          label="Current streak"
+          value={String(streak)}
+          unit="days"
+          change="+4"
+          icon={Flame}
+        />
+        <StatCard
+          label="Sessions"
+          value={String(sessionCount)}
+          change={stats.count > 0 ? `+${stats.count} new` : "+11"}
+          icon={Activity}
+        />
       </div>
 
       <div className="mt-6">
@@ -119,10 +149,23 @@ function Dashboard() {
         <section className="glass card-hover rounded-2xl p-6">
           <p className="eyebrow">Today&apos;s insight</p>
           <p className="display-title mt-4 text-xl leading-snug">
-            &ldquo;I keep making the hands too small. Need to practice hand construction from
-            different angles.&rdquo;
+            &ldquo;
+            {latest?.notes
+              ? latest.notes
+              : "I keep making the hands too small. Need to practice hand construction from different angles."}
+            &rdquo;
           </p>
-          <button className="mt-6 inline-flex items-center gap-2 text-xs text-accent transition-opacity hover:opacity-80">
+          {latest && (
+            <p className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              {latestMood && <span className="text-base">{latestMood.emoji}</span>}
+              <span>{formatHours(latest.durationMs).label} session</span>
+              {latest.skills.length > 0 && <span>· {latest.skills.join(", ")}</span>}
+            </p>
+          )}
+          <button
+            onClick={() => setOpen(true)}
+            className="mt-6 inline-flex items-center gap-2 text-xs text-accent transition-opacity hover:opacity-80"
+          >
             <Plus size={13} /> Add insight
           </button>
         </section>
@@ -163,6 +206,8 @@ function Dashboard() {
           </div>
         </section>
       </div>
+
+      <NewSessionModal open={open} onClose={() => setOpen(false)} onSave={addSession} />
 
       <footer className="mt-20 border-t border-border pt-6 text-xs text-muted-foreground">
         ART//PROGRESS · Personal studio of Emily Marsh

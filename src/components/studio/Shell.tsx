@@ -76,8 +76,8 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <div className="flex-1 md:hidden">
-        <div className="border-b border-border px-5 py-4">
+      <div className="min-w-0 flex-1">
+        <div className="border-b border-border px-5 py-4 md:hidden">
           <span className="display-title text-xl">
             ART<span className="text-accent">//</span>PROGRESS
           </span>
@@ -93,12 +93,11 @@ export function Shell({ children }: { children: ReactNode }) {
             ))}
           </nav>
         </div>
-        <main className="px-5 py-8">{children}</main>
-      </div>
 
-      <main className="hidden min-w-0 flex-1 px-6 py-10 md:block lg:px-12">
-        <div className="mx-auto max-w-[1180px] animate-in fade-in duration-500">{children}</div>
-      </main>
+        <main className="px-5 py-8 md:px-6 md:py-10 lg:px-12">
+          <div className="mx-auto max-w-[1180px] animate-in fade-in duration-500">{children}</div>
+        </main>
+      </div>
     </div>
   );
 }

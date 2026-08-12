@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Shell } from "@/components/studio/Shell";
+import { ThemeToggle } from "@/components/studio/ThemeToggle";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -27,6 +28,10 @@ function SettingsPage() {
       <h1 className="display-title mt-3 text-4xl md:text-5xl">Settings</h1>
 
       <div className="glass mt-10 max-w-2xl divide-y divide-border rounded-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-5 transition-colors duration-300 hover:bg-secondary/30">
+          <span className="text-sm text-muted-foreground">Appearance</span>
+          <ThemeToggle withLabels />
+        </div>
         {rows.map(([label, value]) => (
           <div
             key={label}

@@ -84,7 +84,8 @@ export function formatHours(ms: number) {
   const totalMinutes = Math.round(ms / 60000);
   const h = Math.floor(totalMinutes / 60);
   const m = totalMinutes % 60;
-  return { hours: h, minutes: m, label: h > 0 ? `${h}h ${m}m` : `${m}m` };
+  const label = h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m` : `${Math.max(1, Math.round(ms / 1000))}s`;
+  return { hours: h, minutes: m, label };
 }
 
 function dayKey(iso: string) {

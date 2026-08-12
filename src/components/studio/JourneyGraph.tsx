@@ -5,7 +5,7 @@ const ranges = ["7D", "30D", "3M", "1Y", "ALL"] as const;
 
 export function JourneyGraph() {
   const [range, setRange] = useState<(typeof ranges)[number]>("1Y");
-  const data = activity[range];
+  const data = activity[range] ?? [];
 
   const { area, line, points } = useMemo(() => {
     const w = 1000;
@@ -17,7 +17,7 @@ export function JourneyGraph() {
     const curve = pts
       .map((p, i) => {
         if (i === 0) return `M ${p[0]} ${p[1]}`;
-        const prev = pts[i - 1];
+        const prev = pts[i - 1]!;
         const cx = (prev[0] + p[0]) / 2;
         return `C ${cx} ${prev[1]} ${cx} ${p[1]} ${p[0]} ${p[1]}`;
       })
@@ -93,7 +93,7 @@ export function JourneyGraph() {
         </svg>
 
         <div className="mt-4 flex justify-between text-[0.68rem] tracking-widest text-muted-foreground uppercase">
-          {activityLabels[range].map((l) => (
+          {(activityLabels[range] ?? []).map((l) => (
             <span key={l}>{l}</span>
           ))}
         </div>

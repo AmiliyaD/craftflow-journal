@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 import {
   Clock3,
   ImageIcon,
@@ -16,8 +17,17 @@ import { SkillCard } from "@/components/studio/SkillCard";
 import { ArtworkCard } from "@/components/studio/ArtworkCard";
 import { BeforeAfter } from "@/components/studio/BeforeAfter";
 import { NewSessionModal } from "@/components/studio/NewSessionModal";
-import { artworks, skills } from "@/components/studio/data";
-import { formatHours, useSessions, MOODS } from "@/lib/sessions";
+import { FinishSessionModal } from "@/components/studio/FinishSessionModal";
+import { CurrentSessionCard } from "@/components/studio/CurrentSessionCard";
+import { RecentSessions } from "@/components/studio/RecentSessions";
+import { artworks } from "@/components/studio/data";
+import {
+  formatHours,
+  useSessions,
+  useActiveSession,
+  computeSkillStats,
+  MOODS,
+} from "@/lib/sessions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,34 +50,55 @@ export const Route = createFileRoute("/")({
 
 const achievements = ["100 Hours", "First Portrait", "30 Day Streak", "100 Hand Studies"];
 
-const BASE = { totalMs: (127 * 60 + 34) * 60000, sessions: 146, streak: 12 };
-
 function Dashboard() {
   const [open, setOpen] = useState(false);
+  const [finishing, setFinishing] = useState(false);
   const { sessions, addSession, stats } = useSessions();
+  const activeSession = useActiveSession();
+  const { active, elapsedMs, isRunning } = activeSession;
 
-  const total = formatHours(BASE.totalMs + stats.totalMs);
-  const sessionCount = BASE.sessions + stats.count;
-  const streak = Math.max(BASE.streak, stats.streak);
+  const total = formatHours(stats.totalMs);
+  const skillStats = useMemo(() => computeSkillStats(sessions), [sessions]);
+  const topSkills = skillStats.slice(0, 4);
   const latest = sessions[0];
   const latestMood = latest ? MOODS.find((m) => m.key === latest.mood) : undefined;
+
+  const handleStart = (skills: string[]) => {
+    activeSession.start(skills);
+    toast.success("Session started");
+  };
+
+  const handleDiscard = () => {
+    if (window.confirm("Discard this session? The tracked time will be lost.")) {
+      activeSession.discard();
+      toast("Session discarded");
+    }
+  };
+
+  const handleFinishSave = (mood: Parameters<typeof addSession>[0]["mood"], notes: string) => {
+    const session = activeSession.toSession(mood, notes);
+    if (session) addSession(session);
+    activeSession.clear();
+    setFinishing(false);
+    toast.success("Session saved");
+  };
 
   return (
     <Shell>
       <header className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <p className="eyebrow">Wednesday, August 12 · 21:13</p>
+          <p className="eyebrow">Your studio</p>
           <h1 className="display-title mt-3 text-4xl md:text-5xl">Good evening, Emily.</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Let&apos;s see how your art is evolving.
           </p>
         </div>
         <button
-          onClick={() => setOpen(true)}
+          onClick={() => (active ? setFinishing(true) : setOpen(true))}
           className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm text-accent-foreground transition-opacity duration-300 hover:opacity-90"
         >
           <Plus size={15} strokeWidth={2} />
-          New session
+          {active ? "Finish session" : "New session"}
         </button>
       </header>
 
@@ -76,29 +107,34 @@ function Dashboard() {
           label="Drawing time"
           value={`${total.hours}h`}
           unit={`${total.minutes}m`}
-          change={
-            stats.totalMs > 0 ? `+${formatHours(stats.totalMs).label} tracked` : "+8h 12m"
-          }
           icon={Clock3}
         />
-        <StatCard label="Artworks" value="83" change="+6" icon={ImageIcon} />
+        <StatCard label="Artworks" value="0" icon={ImageIcon} />
         <StatCard
           label="Current streak"
-          value={String(streak)}
+          value={String(stats.streak)}
           unit="days"
-          change="+4"
           icon={Flame}
         />
-        <StatCard
-          label="Sessions"
-          value={String(sessionCount)}
-          change={stats.count > 0 ? `+${stats.count} new` : "+11"}
-          icon={Activity}
-        />
+        <StatCard label="Sessions" value={String(stats.count)} icon={Activity} />
       </div>
 
+      {active && (
+        <div className="mt-6">
+          <CurrentSessionCard
+            active={active}
+            elapsedMs={elapsedMs}
+            isRunning={isRunning}
+            onPause={activeSession.pause}
+            onResume={activeSession.resume}
+            onFinish={() => setFinishing(true)}
+            onDiscard={handleDiscard}
+          />
+        </div>
+      )}
+
       <div className="mt-6">
-        <JourneyGraph />
+        <JourneyGraph sessions={sessions} />
       </div>
 
       <section className="mt-16">
@@ -115,11 +151,15 @@ function Dashboard() {
           </Link>
         </div>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {skills.map((s) => (
+          {topSkills.map((s) => (
             <SkillCard key={s.name} skill={s} />
           ))}
         </div>
       </section>
+
+      <div className="mt-16">
+        <RecentSessions sessions={sessions} />
+      </div>
 
       <section className="mt-16">
         <div className="flex items-end justify-between">
@@ -149,11 +189,9 @@ function Dashboard() {
         <section className="glass card-hover rounded-2xl p-6">
           <p className="eyebrow">Today&apos;s insight</p>
           <p className="display-title mt-4 text-xl leading-snug">
-            &ldquo;
             {latest?.notes
-              ? latest.notes
-              : "I keep making the hands too small. Need to practice hand construction from different angles."}
-            &rdquo;
+              ? `\u201C${latest.notes}\u201D`
+              : "No notes yet — finish a session to capture what you learned."}
           </p>
           {latest && (
             <p className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -163,7 +201,7 @@ function Dashboard() {
             </p>
           )}
           <button
-            onClick={() => setOpen(true)}
+            onClick={() => (active ? setFinishing(true) : setOpen(true))}
             className="mt-6 inline-flex items-center gap-2 text-xs text-accent transition-opacity hover:opacity-80"
           >
             <Plus size={13} /> Add insight
@@ -207,7 +245,14 @@ function Dashboard() {
         </section>
       </div>
 
-      <NewSessionModal open={open} onClose={() => setOpen(false)} onSave={addSession} />
+      <NewSessionModal open={open} onClose={() => setOpen(false)} onStart={handleStart} />
+      <FinishSessionModal
+        open={finishing}
+        onClose={() => setFinishing(false)}
+        durationMs={elapsedMs}
+        skills={active?.skills ?? []}
+        onSave={handleFinishSave}
+      />
 
       <footer className="mt-20 border-t border-border pt-6 text-xs text-muted-foreground">
         ART//PROGRESS · Personal studio of Emily Marsh

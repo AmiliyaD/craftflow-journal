@@ -1,16 +1,18 @@
 import { useMemo, useState } from "react";
-import { activity, activityLabels } from "./data";
+import { computeActivitySeries, type RangeKey, type Session } from "@/lib/sessions";
 
-const ranges = ["7D", "30D", "3M", "1Y", "ALL"] as const;
+const ranges: RangeKey[] = ["7D", "30D", "3M", "1Y", "ALL"];
 
-export function JourneyGraph() {
-  const [range, setRange] = useState<(typeof ranges)[number]>("1Y");
-  const data = activity[range] ?? [];
+export function JourneyGraph({ sessions }: { sessions: Session[] }) {
+  const [range, setRange] = useState<RangeKey>("30D");
+  const series = useMemo(() => computeActivitySeries(sessions, range), [sessions, range]);
+  const data = series.values;
 
   const { area, line, points } = useMemo(() => {
     const w = 1000;
     const h = 260;
-    const max = Math.max(...data) * 1.15;
+    if (data.length < 2) return { area: "", line: "", points: [] as (readonly [number, number])[] };
+    const max = Math.max(...data, 1) * 1.15;
     const step = w / (data.length - 1);
     const pts = data.map((v, i) => [i * step, h - (v / max) * h] as const);
 
@@ -50,54 +52,63 @@ export function JourneyGraph() {
         </div>
       </div>
 
-      <div className="mt-8">
-        <svg viewBox="0 0 1000 260" preserveAspectRatio="none" className="h-56 w-full md:h-64">
-          <defs>
-            <linearGradient id="journeyFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.28" />
-              <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          {[0, 1, 2, 3].map((i) => (
-            <line
-              key={i}
-              x1="0"
-              x2="1000"
-              y1={(260 / 3) * i}
-              y2={(260 / 3) * i}
-              stroke="currentColor"
-              className="text-border"
-              strokeWidth="1"
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-          <path d={area} fill="url(#journeyFill)" />
-          <path
-            d={line}
-            fill="none"
-            stroke="var(--accent)"
-            strokeWidth="2"
-            vectorEffect="non-scaling-stroke"
-            strokeLinecap="round"
-          />
-          {points.map((p, i) => (
-            <circle
-              key={i}
-              cx={p[0]}
-              cy={p[1]}
-              r="6"
-              fill="var(--accent)"
-              className="opacity-0 transition-opacity duration-300 hover:opacity-100"
-            />
-          ))}
-        </svg>
-
-        <div className="mt-4 flex justify-between text-[0.68rem] tracking-widest text-muted-foreground uppercase">
-          {(activityLabels[range] ?? []).map((l) => (
-            <span key={l}>{l}</span>
-          ))}
+      {!series.hasData ? (
+        <div className="mt-8 flex h-56 flex-col items-center justify-center rounded-2xl border border-dashed border-border text-center md:h-64">
+          <p className="display-title text-xl">No sessions yet.</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Start your first drawing session to begin the timeline.
+          </p>
         </div>
-      </div>
+      ) : (
+        <div className="mt-8">
+          <svg viewBox="0 0 1000 260" preserveAspectRatio="none" className="h-56 w-full md:h-64">
+            <defs>
+              <linearGradient id="journeyFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.28" />
+                <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {[0, 1, 2, 3].map((i) => (
+              <line
+                key={i}
+                x1="0"
+                x2="1000"
+                y1={(260 / 3) * i}
+                y2={(260 / 3) * i}
+                stroke="currentColor"
+                className="text-border"
+                strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+            <path d={area} fill="url(#journeyFill)" />
+            <path
+              d={line}
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+              strokeLinecap="round"
+            />
+            {points.map((p, i) => (
+              <circle
+                key={i}
+                cx={p[0]}
+                cy={p[1]}
+                r="6"
+                fill="var(--accent)"
+                className="opacity-0 transition-opacity duration-300 hover:opacity-100"
+              />
+            ))}
+          </svg>
+
+          <div className="mt-4 flex justify-between text-[0.68rem] tracking-widest text-muted-foreground uppercase">
+            {series.labels.map((l, i) => (
+              <span key={`${l}-${i}`}>{l}</span>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

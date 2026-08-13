@@ -11,7 +11,7 @@ export function StatCard({
   label: string;
   value: string;
   unit?: string;
-  change: string;
+  change?: string;
   icon: LucideIcon;
   positive?: boolean;
 }) {
@@ -25,15 +25,17 @@ export function StatCard({
         {value}
         {unit ? <span className="ml-1 text-lg text-muted-foreground">{unit}</span> : null}
       </p>
-      <div
-        className={`mt-3 inline-flex items-center gap-1 text-xs ${
-          positive ? "text-success" : "text-muted-foreground"
-        }`}
-      >
-        {positive ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
-        <span>{change}</span>
-        <span className="text-muted-foreground">vs last period</span>
-      </div>
+      {change ? (
+        <div
+          className={`mt-3 inline-flex items-center gap-1 text-xs ${
+            positive ? "text-success" : "text-muted-foreground"
+          }`}
+        >
+          {positive ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
+          <span>{change}</span>
+          <span className="text-muted-foreground">vs last period</span>
+        </div>
+      ) : null}
     </div>
   );
 }

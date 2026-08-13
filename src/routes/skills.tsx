@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Shell } from "@/components/studio/Shell";
 import { SkillCard } from "@/components/studio/SkillCard";
-import { skills } from "@/components/studio/data";
+import { computeSkillStats, useSessions } from "@/lib/sessions";
 
 export const Route = createFileRoute("/skills")({
   head: () => ({
@@ -22,6 +22,9 @@ export const Route = createFileRoute("/skills")({
 });
 
 function SkillsPage() {
+  const { sessions } = useSessions();
+  const skills = computeSkillStats(sessions);
+
   return (
     <Shell>
       <p className="eyebrow">Practice areas</p>

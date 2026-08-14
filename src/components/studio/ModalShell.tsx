@@ -8,12 +8,14 @@ export function ModalShell({
   title,
   children,
   label,
+  size = "md",
 }: {
   open: boolean;
   onClose: () => void;
   eyebrow: string;
   title: string;
   label: string;
+  size?: "md" | "lg";
   children: ReactNode;
 }) {
   useEffect(() => {
@@ -40,7 +42,7 @@ export function ModalShell({
         role="dialog"
         aria-modal="true"
         aria-label={label}
-        className="glass animate-in fade-in zoom-in-95 relative w-full max-w-xl rounded-3xl p-7 duration-300 md:p-8"
+        className={`glass animate-in fade-in zoom-in-95 relative w-full ${size === "lg" ? "max-w-3xl" : "max-w-xl"} rounded-3xl p-7 duration-300 md:p-8`}
       >
         <div className="flex items-start justify-between gap-4">
           <div>

@@ -18,9 +18,16 @@ export type Insight = Entity & {
   tags: string[];
   relatedArtworkId: string | null;
   relatedChallengeId: string | null;
+  relatedSessionId: string | null;
+  /** YYYY-MM-DD; falls back to createdAt for older records. */
+  date: string;
   createdAt: string;
   updatedAt: string;
 };
+
+export function insightDate(i: Insight) {
+  return i.date || i.createdAt.slice(0, 10);
+}
 
 function isInsight(v: unknown): v is Insight {
   if (!v || typeof v !== "object") return false;
@@ -63,6 +70,8 @@ function seedInsights(): Insight[] {
       tags: b.tags,
       relatedArtworkId: null,
       relatedChallengeId: null,
+      relatedSessionId: null,
+      date: iso.slice(0, 10),
       createdAt: iso,
       updatedAt: iso,
     };
@@ -79,6 +88,8 @@ export type InsightInput = {
   tags: string[];
   relatedArtworkId: string | null;
   relatedChallengeId: string | null;
+  relatedSessionId?: string | null;
+  date?: string;
 };
 
 export function useInsights() {
@@ -93,6 +104,8 @@ export function useInsights() {
       tags: input.tags,
       relatedArtworkId: input.relatedArtworkId,
       relatedChallengeId: input.relatedChallengeId,
+      relatedSessionId: input.relatedSessionId ?? null,
+      date: input.date || created.slice(0, 10),
       createdAt: created,
       updatedAt: created,
     };
@@ -108,10 +121,12 @@ export function useInsights() {
       tags: input.tags,
       relatedArtworkId: input.relatedArtworkId,
       relatedChallengeId: input.relatedChallengeId,
+      relatedSessionId: input.relatedSessionId ?? null,
+      date: input.date || insightDate(prev),
       updatedAt: nowIso(),
     }));
 
-  const sorted = [...items].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const sorted = [...items].sort((a, b) => insightDate(b).localeCompare(insightDate(a)));
 
   return { insights: sorted, ready, createInsight, editInsight, deleteInsight: remove };
 }

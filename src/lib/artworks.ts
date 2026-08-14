@@ -26,6 +26,8 @@ export type Artwork = Entity & {
   topics: string[];
   mood: Mood | null;
   notes: string;
+  /** Session this artwork came out of, when created from a finished session. */
+  sourceSessionId: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -48,6 +50,7 @@ export type ArtworkInput = {
   topics: string[];
   mood: Mood | null;
   notes: string;
+  sourceSessionId?: string | null;
   /** New file to store; omit to keep the current image. */
   file?: File | null;
 };
@@ -80,6 +83,7 @@ export function useArtworks() {
       topics: input.topics,
       mood: input.mood,
       notes: input.notes.trim(),
+      sourceSessionId: input.sourceSessionId ?? null,
       createdAt: created,
       updatedAt: created,
     };
@@ -104,6 +108,7 @@ export function useArtworks() {
       mood: input.mood,
       notes: input.notes.trim(),
       imageId: newImageId ?? prev.imageId,
+      sourceSessionId: input.sourceSessionId ?? prev.sourceSessionId ?? null,
       updatedAt: nowIso(),
     }));
     if (newImageId && previous?.imageId) await deleteImage(previous.imageId);
@@ -115,5 +120,7 @@ export function useArtworks() {
     if (target?.imageId) await deleteImage(target.imageId);
   };
 
-  return { artworks: items, ready, createArtwork, editArtwork, deleteArtwork };
+  const sorted = [...items].sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
+
+  return { artworks: sorted, ready, createArtwork, editArtwork, deleteArtwork };
 }

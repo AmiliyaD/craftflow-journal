@@ -206,7 +206,12 @@ export function useAchievements({ notify = false }: { notify?: boolean } = {}) {
     const fresh = achievements.filter((a) => a.unlocked && !known.has(a.id));
     if (fresh.length === 0) return;
     const at = nowIso();
-    store.commit([...store.read(), ...fresh.map((a) => ({ id: a.id, unlockedAt: at }))]);
+    const persisted = store.read();
+    const existing = new Set(persisted.map((u) => u.id));
+    const toAdd = fresh.filter((a) => !existing.has(a.id));
+    if (toAdd.length > 0) {
+      store.commit([...persisted, ...toAdd.map((a) => ({ id: a.id, unlockedAt: at }))]);
+    }
     if (!notify) return;
     for (const a of fresh) {
       if (announced.current.has(a.id)) continue;

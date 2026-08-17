@@ -5,11 +5,13 @@ import { useImageUrl } from "@/lib/image-store";
 
 export function ArtworkCard({
   art,
+  index = 0,
   onOpen,
   onEdit,
   onDelete,
 }: {
   art: Artwork;
+  index?: number;
   onOpen?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -17,7 +19,7 @@ export function ArtworkCard({
   const url = useImageUrl(art.imageId);
 
   return (
-    <figure className="group motion-item">
+    <figure className="group motion-item" style={{ animationDelay: `${Math.min(index, 12) * 55}ms` }}>
       <div className="relative overflow-hidden rounded-2xl border border-border transition-[border-color,box-shadow,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5 group-hover:border-border-strong group-hover:shadow-[var(--shadow-lift)]">
         <button
           type="button"

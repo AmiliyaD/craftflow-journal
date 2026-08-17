@@ -184,9 +184,7 @@ function Dashboard() {
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {artworks.slice(0, 4).map((a, i) => (
-              <div key={a.id} style={{ animationDelay: `${i * 60}ms` }} className="contents">
-                <ArtworkCard art={a} />
-              </div>
+              <ArtworkCard key={a.id} art={a} index={i} />
             ))}
           </div>
         )}

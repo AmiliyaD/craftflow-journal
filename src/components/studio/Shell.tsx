@@ -49,6 +49,8 @@ function NavItem({ to, label, icon: Icon }: { to: string; label: string; icon: L
 
 
 export function Shell({ children }: { children: ReactNode }) {
+  const routePath = useRouterState({ select: (s) => s.location.pathname });
+
   return (
     <div className="flex min-h-screen">
       <aside className="sticky top-0 hidden h-screen w-[248px] shrink-0 flex-col border-r border-border px-5 py-7 md:flex">

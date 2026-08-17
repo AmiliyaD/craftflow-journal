@@ -52,10 +52,12 @@ export function useCountUp(target: number, duration = 700) {
  */
 export function useAnimatedValue(value: string) {
   const match = /^(-?\d+(?:\.\d+)?)(.*)$/.exec(value.trim());
-  const target = match ? Number(match[1]) : NaN;
-  const suffix = match ? match[2] : "";
-  const decimals = match && match[1].includes(".") ? match[1].split(".")[1].length : 0;
+  const numText = match?.[1] ?? "";
+  const target = match ? Number(numText) : NaN;
+  const suffix = match?.[2] ?? "";
+  const decimals = numText.includes(".") ? (numText.split(".")[1]?.length ?? 0) : 0;
   const animated = useCountUp(Number.isFinite(target) ? target : 0);
+
 
   if (!match) return value;
   return `${animated.toFixed(decimals)}${suffix}`;

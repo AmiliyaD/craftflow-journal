@@ -26,22 +26,27 @@ function NavItem({ to, label, icon: Icon }: { to: string; label: string; icon: L
   return (
     <Link
       to={to}
-      className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors duration-300 ${
+      className={`press group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${
         active
           ? "bg-accent-soft text-foreground"
           : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
       }`}
     >
       <span
-        className={`absolute left-0 top-1/2 h-5 w-px -translate-y-1/2 rounded-full bg-accent transition-opacity duration-300 ${
-          active ? "opacity-100" : "opacity-0"
+        className={`absolute left-0 top-1/2 h-5 w-px -translate-y-1/2 rounded-full bg-accent transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          active ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"
         }`}
       />
-      <Icon size={17} strokeWidth={1.6} className={active ? "text-accent" : ""} />
+      <Icon
+        size={17}
+        strokeWidth={1.6}
+        className={`transition-colors duration-200 ${active ? "text-accent" : ""}`}
+      />
       <span className="tracking-tight">{label}</span>
     </Link>
   );
 }
+
 
 export function Shell({ children }: { children: ReactNode }) {
   return (

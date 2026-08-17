@@ -110,7 +110,7 @@ function Dashboard() {
           unit={`${total.minutes}m`}
           icon={Clock3}
         />
-        <StatCard label="Artworks" value="0" icon={ImageIcon} />
+        <StatCard label="Artworks" value={String(artworks.length)} icon={ImageIcon} />
         <StatCard
           label="Current streak"
           value={String(stats.streak)}

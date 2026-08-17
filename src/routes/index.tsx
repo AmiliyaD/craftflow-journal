@@ -20,7 +20,7 @@ import { NewSessionModal } from "@/components/studio/NewSessionModal";
 import { FinishSessionModal } from "@/components/studio/FinishSessionModal";
 import { CurrentSessionCard } from "@/components/studio/CurrentSessionCard";
 import { RecentSessions } from "@/components/studio/RecentSessions";
-import { artworks } from "@/components/studio/data";
+import { useArtworks } from "@/lib/artworks";
 import {
   formatHours,
   useSessions,

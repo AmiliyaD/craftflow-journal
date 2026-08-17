@@ -98,7 +98,7 @@ export function Shell({ children }: { children: ReactNode }) {
               <Link
                 key={n.to}
                 to={n.to}
-                className="whitespace-nowrap rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground"
+                className="press-sm whitespace-nowrap rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground hover:border-border-strong hover:text-foreground"
               >
                 {n.label}
               </Link>
@@ -107,8 +107,11 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
 
         <main className="px-5 py-8 md:px-6 md:py-10 lg:px-12">
-          <div className="mx-auto max-w-[1180px] animate-in fade-in duration-500">{children}</div>
+          <div key={routePath} className="motion-page mx-auto max-w-[1180px]">
+            {children}
+          </div>
         </main>
+
       </div>
     </div>
   );

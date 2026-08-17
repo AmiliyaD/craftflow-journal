@@ -175,11 +175,17 @@ function Dashboard() {
             View all artwork <ArrowRight size={13} />
           </Link>
         </div>
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {artworks.map((a) => (
-            <ArtworkCard key={a.title} art={a} />
-          ))}
-        </div>
+        {artworks.length === 0 ? (
+          <p className="mt-6 text-sm text-muted-foreground">
+            No artwork yet — add your first piece from the Artwork page.
+          </p>
+        ) : (
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {artworks.slice(0, 4).map((a) => (
+              <ArtworkCard key={a.id} art={a} />
+            ))}
+          </div>
+        )}
       </section>
 
       <div className="mt-16">

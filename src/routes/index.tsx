@@ -54,6 +54,7 @@ function Dashboard() {
   const [open, setOpen] = useState(false);
   const [finishing, setFinishing] = useState(false);
   const { sessions, addSession, stats } = useSessions();
+  const { artworks } = useArtworks();
   const activeSession = useActiveSession();
   const { active, elapsedMs, isRunning } = activeSession;
 

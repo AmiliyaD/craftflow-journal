@@ -20,7 +20,7 @@ import { NewSessionModal } from "@/components/studio/NewSessionModal";
 import { FinishSessionModal } from "@/components/studio/FinishSessionModal";
 import { CurrentSessionCard } from "@/components/studio/CurrentSessionCard";
 import { RecentSessions } from "@/components/studio/RecentSessions";
-import { artworks } from "@/components/studio/data";
+import { useArtworks } from "@/lib/artworks";
 import {
   formatHours,
   useSessions,
@@ -54,6 +54,7 @@ function Dashboard() {
   const [open, setOpen] = useState(false);
   const [finishing, setFinishing] = useState(false);
   const { sessions, addSession, stats } = useSessions();
+  const { artworks } = useArtworks();
   const activeSession = useActiveSession();
   const { active, elapsedMs, isRunning } = activeSession;
 
@@ -109,7 +110,7 @@ function Dashboard() {
           unit={`${total.minutes}m`}
           icon={Clock3}
         />
-        <StatCard label="Artworks" value="0" icon={ImageIcon} />
+        <StatCard label="Artworks" value={String(artworks.length)} icon={ImageIcon} />
         <StatCard
           label="Current streak"
           value={String(stats.streak)}
@@ -174,11 +175,17 @@ function Dashboard() {
             View all artwork <ArrowRight size={13} />
           </Link>
         </div>
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {artworks.map((a) => (
-            <ArtworkCard key={a.title} art={a} />
-          ))}
-        </div>
+        {artworks.length === 0 ? (
+          <p className="mt-6 text-sm text-muted-foreground">
+            No artwork yet — add your first piece from the Artwork page.
+          </p>
+        ) : (
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {artworks.slice(0, 4).map((a) => (
+              <ArtworkCard key={a.id} art={a} />
+            ))}
+          </div>
+        )}
       </section>
 
       <div className="mt-16">

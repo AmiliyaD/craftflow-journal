@@ -29,10 +29,10 @@ export function ArtworkDetailModal({
       label="Artwork detail"
     >
       {artwork && (
-        <div className="mt-7 grid gap-7 md:grid-cols-[minmax(0,340px)_1fr]">
+        <div className="motion-value mt-7 grid gap-7 md:grid-cols-[minmax(0,340px)_1fr]">
           <div className="overflow-hidden rounded-2xl border border-border">
             {url ? (
-              <img src={url} alt={artwork.title} className="w-full object-cover" />
+              <img src={url} alt={artwork.title} className="motion-value w-full object-cover" />
             ) : (
               <span className="flex aspect-[4/5] items-center justify-center bg-secondary/40">
                 <ImageIcon size={22} strokeWidth={1.3} className="text-muted-foreground" />
@@ -96,13 +96,13 @@ export function ArtworkDetailModal({
             <div className="mt-auto flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={onDelete}
-                className="inline-flex items-center gap-2 rounded-full border border-destructive/40 px-4 py-2.5 text-sm text-destructive transition-colors hover:bg-destructive/10"
+                className="press inline-flex items-center gap-2 rounded-full border border-destructive/40 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10"
               >
                 <Trash2 size={14} /> Delete
               </button>
               <button
                 onClick={onEdit}
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm text-accent-foreground transition-opacity hover:opacity-90"
+                className="press inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm text-accent-foreground hover:opacity-90"
               >
                 <Pencil size={14} /> Edit
               </button>

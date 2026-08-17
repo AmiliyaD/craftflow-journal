@@ -35,7 +35,7 @@ export function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3.5 py-1.5 text-xs tracking-wide transition-all duration-300 ${
+      className={`press-sm rounded-full border px-3.5 py-1.5 text-xs tracking-wide ${
         active
           ? "border-accent/40 bg-accent-soft text-accent"
           : "border-border text-muted-foreground hover:border-border-strong hover:text-foreground"
@@ -96,7 +96,7 @@ export function TagPicker({
         <button
           type="button"
           onClick={addCustom}
-          className="shrink-0 rounded-xl border border-border px-3 text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground"
+          className="press-sm shrink-0 rounded-xl border border-border px-3 text-muted-foreground hover:border-border-strong hover:text-foreground"
         >
           <Plus size={15} />
         </button>
@@ -121,7 +121,7 @@ export function PrimaryButton({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm text-accent-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+      className="press inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm text-accent-foreground hover:opacity-90 hover:shadow-[0_8px_24px_-12px_var(--accent)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100"
     >
       {children}
     </button>
@@ -139,7 +139,7 @@ export function GhostButton({
     <button
       type="button"
       onClick={onClick}
-      className="rounded-full px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      className="press rounded-full px-4 py-2.5 text-sm text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
     >
       {children}
     </button>

@@ -43,14 +43,18 @@ function JournalPage() {
           <p className="eyebrow">Notes</p>
           <h1 className="display-title mt-3 text-4xl md:text-5xl">Journal</h1>
         </div>
-        <button className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm text-accent-foreground transition-opacity duration-300 hover:opacity-90">
+        <button className="press inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm text-accent-foreground hover:opacity-90">
           <Plus size={15} /> Add insight
         </button>
       </div>
 
       <div className="mt-10 flex max-w-3xl flex-col gap-4">
-        {entries.map((e) => (
-          <article key={e.date} className="glass card-hover rounded-2xl p-6">
+        {entries.map((e, i) => (
+          <article
+            key={e.date}
+            className="glass card-hover motion-item rounded-2xl p-6"
+            style={{ animationDelay: `${i * 55}ms` }}
+          >
             <p className="eyebrow">{e.date}</p>
             <p className="display-title mt-3 text-xl leading-snug">{e.text}</p>
           </article>

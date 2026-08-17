@@ -32,8 +32,12 @@ function ChallengesPage() {
       <h1 className="display-title mt-3 text-4xl md:text-5xl">Challenges</h1>
 
       <div className="mt-10 grid gap-5 lg:grid-cols-3">
-        {challenges.map((c) => (
-          <section key={c.name} className="glass card-hover rounded-2xl p-6">
+        {challenges.map((c, i) => (
+          <section
+            key={c.name}
+            className="glass card-hover motion-item rounded-2xl p-6"
+            style={{ animationDelay: `${i * 70}ms` }}
+          >
             <div className="flex items-center justify-between">
               <h2 className="text-sm tracking-[0.16em] uppercase">{c.name}</h2>
               <span className="text-[0.68rem] tracking-widest text-muted-foreground uppercase">
@@ -45,16 +49,16 @@ function ChallengesPage() {
             </p>
             <div className="mt-4 h-[3px] w-full overflow-hidden rounded-full bg-secondary">
               <div
-                className="h-full rounded-full bg-accent"
+                className="progress-bar h-full rounded-full bg-accent"
                 style={{ width: `${(c.done / c.total) * 100}%` }}
               />
             </div>
             <div className="mt-5 grid grid-cols-10 gap-1.5">
-              {Array.from({ length: c.total }, (_, i) => (
+              {Array.from({ length: c.total }, (_, d) => (
                 <span
-                  key={i}
-                  className={`aspect-square rounded-[3px] ${
-                    i < c.done ? "bg-accent/70" : "bg-secondary"
+                  key={d}
+                  className={`aspect-square rounded-[3px] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    d < c.done ? "bg-accent/70" : "bg-secondary"
                   }`}
                 />
               ))}

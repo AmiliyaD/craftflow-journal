@@ -1,4 +1,5 @@
 import { ArrowUpRight, ArrowDownRight, type LucideIcon } from "lucide-react";
+import { useAnimatedValue } from "@/lib/use-count-up";
 
 export function StatCard({
   label,
@@ -15,19 +16,21 @@ export function StatCard({
   icon: LucideIcon;
   positive?: boolean;
 }) {
+  const animated = useAnimatedValue(value);
+
   return (
-    <div className="glass card-hover rounded-2xl p-5">
+    <div className="glass card-hover motion-item rounded-2xl p-5">
       <div className="flex items-start justify-between">
         <p className="eyebrow">{label}</p>
         <Icon size={16} strokeWidth={1.5} className="text-muted-foreground" />
       </div>
-      <p className="display-title mt-6 text-4xl">
-        {value}
+      <p className="display-title mt-6 text-4xl tabular-nums">
+        {animated}
         {unit ? <span className="ml-1 text-lg text-muted-foreground">{unit}</span> : null}
       </p>
       {change ? (
         <div
-          className={`mt-3 inline-flex items-center gap-1 text-xs ${
+          className={`motion-value mt-3 inline-flex items-center gap-1 text-xs ${
             positive ? "text-success" : "text-muted-foreground"
           }`}
         >

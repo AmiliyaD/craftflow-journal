@@ -174,3 +174,189 @@
   letter-spacing: -0.03em;
   line-height: 1.08;
 }
+
+/* ---------------------------------------------------------------
+   Motion system — premium, subtle, transform/opacity driven
+--------------------------------------------------------------- */
+
+@theme inline {
+  --ease-motion: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-motion-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --duration-micro: 160ms;
+  --duration-component: 220ms;
+  --duration-surface: 320ms;
+}
+
+@keyframes motion-page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes motion-item-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes motion-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes motion-surface-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes motion-surface-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(0.99);
+  }
+}
+
+@keyframes motion-value-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes motion-unlock {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes motion-complete-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+
+@utility motion-page {
+  animation: motion-page-in 320ms var(--ease-motion) both;
+}
+
+@utility motion-item {
+  animation: motion-item-in 260ms var(--ease-motion) both;
+}
+
+@utility motion-surface {
+  animation: motion-surface-in 280ms var(--ease-motion) both;
+}
+
+@utility motion-surface-exit {
+  animation: motion-surface-out 180ms var(--ease-motion-out) both;
+}
+
+@utility motion-overlay {
+  animation: motion-overlay-in 240ms ease-out both;
+}
+
+@utility motion-overlay-exit {
+  animation: motion-overlay-out 180ms ease-in both;
+}
+
+@utility motion-value {
+  animation: motion-value-in 260ms var(--ease-motion) both;
+}
+
+@utility motion-unlock {
+  animation: motion-unlock 380ms var(--ease-motion) both;
+}
+
+/* Pressed / hover feedback for interactive controls */
+@utility press {
+  transition:
+    transform 140ms var(--ease-motion),
+    opacity 140ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+  &:active {
+    transform: scale(0.975);
+  }
+}
+
+@utility press-sm {
+  transition:
+    transform 140ms var(--ease-motion),
+    opacity 140ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+  &:active {
+    transform: scale(0.94);
+  }
+}
+
+@utility progress-bar {
+  transition:
+    width 520ms var(--ease-motion),
+    background-color 300ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

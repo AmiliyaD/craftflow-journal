@@ -80,9 +80,10 @@ function ArtworkPage() {
         </div>
       ) : (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {artworks.map((a) => (
+          {artworks.map((a, i) => (
             <ArtworkCard
               key={a.id}
+              index={i}
               art={a}
               onOpen={() => setDetail(a)}
               onEdit={() => openEdit(a)}

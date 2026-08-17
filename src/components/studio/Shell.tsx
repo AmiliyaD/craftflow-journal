@@ -26,24 +26,31 @@ function NavItem({ to, label, icon: Icon }: { to: string; label: string; icon: L
   return (
     <Link
       to={to}
-      className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors duration-300 ${
+      className={`press group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${
         active
           ? "bg-accent-soft text-foreground"
           : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
       }`}
     >
       <span
-        className={`absolute left-0 top-1/2 h-5 w-px -translate-y-1/2 rounded-full bg-accent transition-opacity duration-300 ${
-          active ? "opacity-100" : "opacity-0"
+        className={`absolute left-0 top-1/2 h-5 w-px -translate-y-1/2 rounded-full bg-accent transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          active ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"
         }`}
       />
-      <Icon size={17} strokeWidth={1.6} className={active ? "text-accent" : ""} />
+      <Icon
+        size={17}
+        strokeWidth={1.6}
+        className={`transition-colors duration-200 ${active ? "text-accent" : ""}`}
+      />
       <span className="tracking-tight">{label}</span>
     </Link>
   );
 }
 
+
 export function Shell({ children }: { children: ReactNode }) {
+  const routePath = useRouterState({ select: (s) => s.location.pathname });
+
   return (
     <div className="flex min-h-screen">
       <aside className="sticky top-0 hidden h-screen w-[248px] shrink-0 flex-col border-r border-border px-5 py-7 md:flex">
@@ -93,7 +100,7 @@ export function Shell({ children }: { children: ReactNode }) {
               <Link
                 key={n.to}
                 to={n.to}
-                className="whitespace-nowrap rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground"
+                className="press-sm whitespace-nowrap rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground hover:border-border-strong hover:text-foreground"
               >
                 {n.label}
               </Link>
@@ -102,8 +109,11 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
 
         <main className="px-5 py-8 md:px-6 md:py-10 lg:px-12">
-          <div className="mx-auto max-w-[1180px] animate-in fade-in duration-500">{children}</div>
+          <div key={routePath} className="motion-page mx-auto max-w-[1180px]">
+            {children}
+          </div>
         </main>
+
       </div>
     </div>
   );

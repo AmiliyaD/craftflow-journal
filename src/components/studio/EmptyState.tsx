@@ -13,7 +13,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="glass flex flex-col items-center rounded-2xl px-8 py-14 text-center">
+    <div className="glass motion-surface flex flex-col items-center rounded-2xl px-8 py-14 text-center">
       <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border-strong bg-secondary/50">
         <Icon size={18} strokeWidth={1.4} className="text-accent" />
       </span>

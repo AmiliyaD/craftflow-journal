@@ -96,7 +96,7 @@ function Dashboard() {
         </div>
         <button
           onClick={() => (active ? setFinishing(true) : setOpen(true))}
-          className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm text-accent-foreground transition-opacity duration-300 hover:opacity-90"
+          className="press inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm text-accent-foreground hover:opacity-90 hover:shadow-[0_8px_24px_-12px_var(--accent)]"
         >
           <Plus size={15} strokeWidth={2} />
           {active ? "Finish session" : "New session"}
@@ -152,8 +152,10 @@ function Dashboard() {
           </Link>
         </div>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {topSkills.map((s) => (
-            <SkillCard key={s.name} skill={s} />
+          {topSkills.map((s, i) => (
+            <div key={s.name} className="motion-item" style={{ animationDelay: `${i * 60}ms` }}>
+              <SkillCard skill={s} />
+            </div>
           ))}
         </div>
       </section>
@@ -170,7 +172,7 @@ function Dashboard() {
           </div>
           <Link
             to="/artwork"
-            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs transition-colors duration-300 hover:border-border-strong"
+            className="press inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs hover:border-border-strong"
           >
             View all artwork <ArrowRight size={13} />
           </Link>
@@ -181,8 +183,8 @@ function Dashboard() {
           </p>
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {artworks.slice(0, 4).map((a) => (
-              <ArtworkCard key={a.id} art={a} />
+            {artworks.slice(0, 4).map((a, i) => (
+              <ArtworkCard key={a.id} art={a} index={i} />
             ))}
           </div>
         )}
